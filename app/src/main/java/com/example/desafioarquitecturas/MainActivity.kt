@@ -25,6 +25,8 @@ import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.desafioarquitecturas.ui.theme.DesafioArquitecturasTheme
 import retrofit2.Retrofit
@@ -36,16 +38,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             DesafioArquitecturasTheme {
-                val movies = produceState<List<ServerMovie>>(initialValue = emptyList()) {
-                    value = Retrofit.Builder()
-                        .baseUrl("https://api.themoviedb.org/3/")
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build()
-                        .create(MoviesService::class.java)
-                        .getMovies()
-                        .results
-                }
                 // A surface container using the 'background' color from the theme
+                val viewModel: MainViewModel = viewModel()
+
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -56,7 +51,7 @@ class MainActivity : ComponentActivity() {
                                 title = { Text(text = "Movies") }
                             )
                         }
-                    ) {padding ->
+                    ) { padding ->
                         LazyVerticalGrid(
                             columns = GridCells.Adaptive(120.dp),
                             modifier = Modifier.padding(padding),
@@ -64,7 +59,7 @@ class MainActivity : ComponentActivity() {
                             verticalArrangement = Arrangement.spacedBy(4.dp),
                             contentPadding = PaddingValues(4.dp)
                         ) {
-                            items(movies.value) { movie ->
+                            items(viewModel.state.movies) { movie ->
                                 MovieItem(movie)
                             }
                         }
