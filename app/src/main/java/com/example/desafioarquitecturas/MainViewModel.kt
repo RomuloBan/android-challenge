@@ -21,16 +21,21 @@ class MainViewModel: ViewModel() {
 
     init {
         viewModelScope.launch {
-            _state.value = UiState(Retrofit.Builder()
-                .baseUrl("https://api.themoviedb.org/3/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-                .create(MoviesService::class.java)
-                .getMovies()
-                .results)
+            _state.value = UiState(loading = true)
+            _state.value = UiState(
+                loading = false,
+                movies = Retrofit.Builder()
+                    .baseUrl("https://api.themoviedb.org/3/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+                    .create(MoviesService::class.java)
+                    .getMovies()
+                    .results
+            )
         }
     }
     data class UiState(
+        val loading: Boolean = false,
         val movies: List<ServerMovie> = emptyList()
     )
 }
