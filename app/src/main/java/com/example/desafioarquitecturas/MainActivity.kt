@@ -3,6 +3,7 @@ package com.example.desafioarquitecturas
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,8 +16,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -73,7 +77,9 @@ class MainActivity : ComponentActivity() {
                                 contentPadding = PaddingValues(4.dp)
                             ) {
                                 items(state.movies) { movie ->
-                                    MovieItem(movie)
+                                    MovieItem(movie, onClick = {
+                                        viewModel.toggleFavorite(movie)
+                                    })
                                 }
                             }
                         }
@@ -84,8 +90,22 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun MovieItem(movie: ServerMovie) {
-        Column {
+    private fun MovieItem(
+        movie: ServerMovie,
+        onClick: () -> Unit = {}
+    ) {
+        Column(
+            modifier = Modifier.clickable { onClick() }
+        ) {
+            if (movie.favorite) {
+                Icon(
+                    imageVector = Icons.Filled.Favorite,
+                    contentDescription = "Favorite",
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .height(48.dp)
+                )
+            }
             AsyncImage(
                 model = "https://image.tmdb.org/t/p/w185/${movie.poster_path}",
                 contentDescription = movie.title,

@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -22,6 +23,7 @@ class MainViewModel: ViewModel() {
     init {
         viewModelScope.launch {
             _state.value = UiState(loading = true)
+            delay(2000)
             _state.value = UiState(
                 loading = false,
                 movies = Retrofit.Builder()
@@ -33,6 +35,17 @@ class MainViewModel: ViewModel() {
                     .results
             )
         }
+    }
+
+    fun toggleFavorite(movie: ServerMovie) {
+        val movies = _state.value.movies.map {
+            if (it.id == movie.id) {
+                it.copy(favorite = !it.favorite)
+            } else {
+                it
+            }
+        }
+        _state.value = _state.value.copy(movies = movies)
     }
     data class UiState(
         val loading: Boolean = false,
