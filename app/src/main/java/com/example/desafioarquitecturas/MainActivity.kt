@@ -21,6 +21,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,6 +40,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             DesafioArquitecturasTheme {
                 val viewModel: MainViewModel = viewModel()
+                val state by viewModel.state.collectAsState()
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -57,7 +60,7 @@ class MainActivity : ComponentActivity() {
                             verticalArrangement = Arrangement.spacedBy(4.dp),
                             contentPadding = PaddingValues(4.dp)
                         ) {
-                            items(viewModel.state.movies) { movie ->
+                            items(state.movies) { movie ->
                                 MovieItem(movie)
                             }
                         }
@@ -79,7 +82,9 @@ class MainActivity : ComponentActivity() {
             )
             Text(
                 text = movie.title,
-                modifier = Modifier.padding(16.dp).height(48.dp)
+                modifier = Modifier
+                    .padding(16.dp)
+                    .height(48.dp)
             )
         }
     }
