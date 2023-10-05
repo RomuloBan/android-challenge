@@ -77,9 +77,12 @@ class MainActivity : ComponentActivity() {
                                 contentPadding = PaddingValues(4.dp)
                             ) {
                                 items(state.movies) { movie ->
-                                    MovieItem(movie, onClick = {
-                                        viewModel.toggleFavorite(movie)
-                                    })
+                                    MovieItem(
+                                        movie,
+                                        onClick = {
+                                            viewModel.toggleFavorite(movie)
+                                        }
+                                    )
                                 }
                             }
                         }
@@ -97,28 +100,33 @@ class MainActivity : ComponentActivity() {
         Column(
             modifier = Modifier.clickable { onClick() }
         ) {
-            if (movie.favorite) {
-                Icon(
-                    imageVector = Icons.Filled.Favorite,
-                    contentDescription = "Favorite",
+            Box(
+
+            ) {
+                AsyncImage(
+                    model = "https://image.tmdb.org/t/p/w185/${movie.poster_path}",
+                    contentDescription = movie.title,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(2 / 3f)
+                )
+                if (movie.favorite) {
+                    Icon(
+                        imageVector = Icons.Filled.Favorite,
+                        contentDescription = "Favorite",
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .align(Alignment.TopEnd),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+                Text(
+                    text = movie.title,
                     modifier = Modifier
                         .padding(16.dp)
                         .height(48.dp)
                 )
             }
-            AsyncImage(
-                model = "https://image.tmdb.org/t/p/w185/${movie.poster_path}",
-                contentDescription = movie.title,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(2 / 3f)
-            )
-            Text(
-                text = movie.title,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .height(48.dp)
-            )
         }
     }
 }
