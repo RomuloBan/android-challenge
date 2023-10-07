@@ -23,7 +23,6 @@ class MainViewModel: ViewModel() {
     init {
         viewModelScope.launch {
             _state.value = UiState(loading = true)
-            delay(2000)
             _state.value = UiState(
                 loading = false,
                 movies = Retrofit.Builder()
