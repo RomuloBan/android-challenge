@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.desafioarquitecturas.data.Movie
 import com.example.desafioarquitecturas.data.local.MoviesDao
+import com.example.desafioarquitecturas.data.local.toLocalMovie
 import com.example.desafioarquitecturas.data.local.toMovie
 import com.example.desafioarquitecturas.data.remote.MoviesService
 import com.example.desafioarquitecturas.data.remote.toLocalMovie
@@ -44,14 +45,9 @@ class HomeViewModel(val dao: MoviesDao): ViewModel() {
     }
 
     fun toggleFavorite(movie: Movie) {
-        val movies = _state.value.movies.map {
-            if (it.id == movie.id) {
-                it.copy(favorite = !it.favorite)
-            } else {
-                it
-            }
+        viewModelScope.launch {
+            dao.updateMovie(movie.copy(favorite = !movie.favorite).toLocalMovie())
         }
-        _state.value = _state.value.copy(movies = movies)
     }
     data class UiState(
         val loading: Boolean = false,
