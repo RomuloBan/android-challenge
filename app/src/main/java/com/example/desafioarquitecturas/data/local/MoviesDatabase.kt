@@ -9,7 +9,7 @@ import androidx.room.Query
 import androidx.room.RoomDatabase
 import androidx.room.Update
 import com.example.desafioarquitecturas.data.Movie
-import com.example.desafioarquitecturas.data.remote.ServerMovie
+import kotlinx.coroutines.flow.Flow
 
 @Database(entities = [LocalMovie::class], version = 1)
 abstract class MoviesDatabase: RoomDatabase() {
@@ -19,7 +19,7 @@ abstract class MoviesDatabase: RoomDatabase() {
 @Dao
 interface MoviesDao {
     @Query("SELECT * FROM LocalMovie")
-    suspend fun getMovies(): List<LocalMovie>
+    fun getMovies(): Flow<List<LocalMovie>>
 
     @Insert
     suspend fun insertAll(movies: List<LocalMovie>)
