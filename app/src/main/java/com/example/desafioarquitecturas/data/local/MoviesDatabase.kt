@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Entity
 import androidx.room.Insert
+import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.RoomDatabase
 import androidx.room.Update
@@ -32,7 +33,7 @@ interface MoviesDao {
 
 @Entity
 data class LocalMovie(
-    val id: Int,
+    @PrimaryKey(autoGenerate = true) val id: Int,
     val title: String,
     val overview: String,
     val posterPath: String,
