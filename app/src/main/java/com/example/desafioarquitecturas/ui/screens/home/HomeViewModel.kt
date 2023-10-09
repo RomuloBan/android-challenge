@@ -2,15 +2,18 @@ package com.example.desafioarquitecturas.ui.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.desafioarquitecturas.data.Movie
+import com.example.desafioarquitecturas.data.local.MoviesDao
+import com.example.desafioarquitecturas.data.local.toMovie
 import com.example.desafioarquitecturas.data.remote.MoviesService
-import com.example.desafioarquitecturas.data.remote.ServerMovie
+import com.example.desafioarquitecturas.data.remote.toLocalMovie
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class HomeViewModel: ViewModel() {
+class HomeViewModel(val dao: MoviesDao): ViewModel() {
 
 //    var state by mutableStateOf(UiState())
 //        private set
@@ -19,21 +22,28 @@ class HomeViewModel: ViewModel() {
 
     init {
         viewModelScope.launch {
-            _state.value = UiState(loading = true)
+            val isDbEmpty = dao.count() == 0
+            if (isDbEmpty) {
+                _state.value = UiState(loading = true)
+                dao.insertAll(
+                    Retrofit.Builder()
+                        .baseUrl("https://api.themoviedb.org/3/")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build()
+                        .create(MoviesService::class.java)
+                        .getMovies()
+                        .results
+                        .map { it.toLocalMovie() }
+                )
+            }
             _state.value = UiState(
                 loading = false,
-                movies = Retrofit.Builder()
-                    .baseUrl("https://api.themoviedb.org/3/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
-                    .create(MoviesService::class.java)
-                    .getMovies()
-                    .results
+                movies = dao.getMovies().map { it.toMovie() }
             )
         }
     }
 
-    fun toggleFavorite(movie: ServerMovie) {
+    fun toggleFavorite(movie: Movie) {
         val movies = _state.value.movies.map {
             if (it.id == movie.id) {
                 it.copy(favorite = !it.favorite)
@@ -45,6 +55,6 @@ class HomeViewModel: ViewModel() {
     }
     data class UiState(
         val loading: Boolean = false,
-        val movies: List<ServerMovie> = emptyList()
+        val movies: List<Movie> = emptyList()
     )
 }
