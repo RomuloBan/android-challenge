@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.example.desafioarquitecturas.data.Movie
 import com.example.desafioarquitecturas.data.local.MoviesDao
 import com.example.desafioarquitecturas.data.remote.ServerMovie
 import com.example.desafioarquitecturas.ui.theme.DesafioArquitecturasTheme
@@ -86,7 +87,7 @@ fun Home(moviesDao: MoviesDao) {
 
 @Composable
 private fun MovieItem(
-    movie: ServerMovie,
+    movie: Movie,
     onClick: () -> Unit = {}
 ) {
     Column(
