@@ -110,12 +110,13 @@ private fun MovieItem(
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
-            Text(
-                text = movie.title,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .height(48.dp)
-            )
         }
+        Text(
+            text = movie.title,
+            modifier = Modifier
+                .padding(16.dp)
+                .height(48.dp),
+            maxLines = 2
+        )
     }
 }
