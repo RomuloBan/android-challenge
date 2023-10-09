@@ -9,36 +9,30 @@ import com.example.desafioarquitecturas.data.local.toLocalMovie
 import com.example.desafioarquitecturas.data.local.toMovie
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class HomeViewModel(val dao: MoviesDao): ViewModel() {
+class HomeViewModel(private val repository: MoviesRepository): ViewModel() {
 
 //    var state by mutableStateOf(UiState())
 //        private set
     private val _state = MutableStateFlow(UiState())
     val state: StateFlow<UiState> = _state
-    val repository = MoviesRepository()
 
     init {
         viewModelScope.launch {
-            val isDbEmpty = dao.count() == 0
-            if (isDbEmpty) {
-                _state.value = UiState(loading = true)
+            _state.value = UiState(loading = true)
+            repository.getMovies()
 
-
-            }
-            dao.getMovies().collect { movies ->
-                _state.value = UiState(
-                    loading = false,
-                    movies = movies.map { it.toMovie() }
-                )
+            repository.movies.collect {
+                _state.value = UiState(movies = it, loading = false)
             }
         }
     }
 
     fun toggleFavorite(movie: Movie) {
         viewModelScope.launch {
-            dao.updateMovie(movie.copy(favorite = !movie.favorite).toLocalMovie())
+            repository.updateMovie(movie.copy(favorite = !movie.favorite))
         }
     }
     data class UiState(
