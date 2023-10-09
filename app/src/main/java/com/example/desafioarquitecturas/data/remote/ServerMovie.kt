@@ -1,4 +1,4 @@
-package com.example.desafioarquitecturas
+package com.example.desafioarquitecturas.data.remote
 
 data class ServerMovie(
     val adult: Boolean,
