@@ -33,7 +33,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.desafioarquitecturas.data.Movie
 import com.example.desafioarquitecturas.data.local.MoviesDao
-import com.example.desafioarquitecturas.data.remote.ServerMovie
 import com.example.desafioarquitecturas.ui.theme.DesafioArquitecturasTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -95,7 +94,7 @@ private fun MovieItem(
     ) {
         Box {
             AsyncImage(
-                model = "https://image.tmdb.org/t/p/w185/${movie.poster_path}",
+                model = "https://image.tmdb.org/t/p/w185/${movie.posterPath}",
                 contentDescription = movie.title,
                 modifier = Modifier
                     .fillMaxWidth()
