@@ -31,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.example.desafioarquitecturas.MainViewModel
 import com.example.desafioarquitecturas.data.remote.ServerMovie
 import com.example.desafioarquitecturas.ui.theme.DesafioArquitecturasTheme
 
@@ -39,7 +38,7 @@ import com.example.desafioarquitecturas.ui.theme.DesafioArquitecturasTheme
 @Composable
 fun Home() {
     DesafioArquitecturasTheme {
-        val viewModel: MainViewModel = viewModel()
+        val viewModel: HomeViewModel = viewModel()
         val state by viewModel.state.collectAsState()
         // A surface container using the 'background' color from the theme
         Surface(

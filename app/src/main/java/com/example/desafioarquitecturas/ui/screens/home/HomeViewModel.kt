@@ -1,4 +1,4 @@
-package com.example.desafioarquitecturas
+package com.example.desafioarquitecturas.ui.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class MainViewModel: ViewModel() {
+class HomeViewModel: ViewModel() {
 
 //    var state by mutableStateOf(UiState())
 //        private set
