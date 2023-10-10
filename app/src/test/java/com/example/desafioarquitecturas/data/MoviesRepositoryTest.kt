@@ -2,6 +2,9 @@ package com.example.desafioarquitecturas.data
 
 import com.example.desafioarquitecturas.data.local.LocalDataSource
 import com.example.desafioarquitecturas.data.remote.RemoteDataSource
+import junit.framework.TestCase.assertEquals
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.mockito.kotlin.doReturn
@@ -57,5 +60,26 @@ class MoviesRepositoryTest {
         verifyBlocking(localDataSource) {
             insertAll(movieList)
         }
+    }
+
+    @Test
+    fun `When DB is not empty, movies are recovered from DB`() {
+        val localMovies = listOf(Movie(1, "Title 1", "Overview 1", "Poster 1", false))
+        val remoteMovies = listOf(Movie(2, "Title 2", "Overview 2", "Poster 2", false))
+        val localDataSource = mock<LocalDataSource>() {
+            onBlocking { count() } doReturn 1
+            onBlocking { movies } doReturn flowOf(localMovies)
+        }
+        val remoteDataSource = mock<RemoteDataSource>() {
+            onBlocking { getMovies() } doReturn remoteMovies
+        }
+        val repository = MoviesRepository(localDataSource, remoteDataSource)
+
+        val result = runBlocking {
+            repository.getMovies()
+            repository.movies.first()
+        }
+
+        assertEquals(result, localMovies)
     }
 }
